@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hotel Izalco · Sistema de Gestión Hotelera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root{
+    --primary:#334E90;
+    --secondary:#7083B1;
+    --bg:#F6F8FC;
+    --card:#FFFFFF;
+    --text:#1F2937;
+    --text-2:#6B7280;
+    --success:#16A34A;
+    --success-bg:#E9F7EF;
+    --warning:#F59E0B;
+    --warning-bg:#FEF6E7;
+    --error:#DC2626;
+    --error-bg:#FCEBEA;
+    --hover:#29417C;
+    --border:#E5E7EB;
+    --radius:12px;
+    --radius-sm:8px;
+    --shadow-sm: 0 1px 2px rgba(31,41,55,0.06);
+    --shadow-md: 0 4px 12px rgba(51,78,144,0.08);
+    --shadow-lg: 0 12px 32px rgba(51,78,144,0.14);
+    --dur:200ms;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--secondary);color:#fff;}
+  button{font-family:inherit;}
+  a{color:inherit;text-decoration:none;}
+
+  /* ---------- LAYOUT ---------- */
+  .app{display:flex;min-height:100vh;}
+
+  /* ---------- SIDEBAR ---------- */
+  .sidebar{
+    width:264px;
+    flex-shrink:0;
+    background:var(--primary);
+    color:#fff;
+    display:flex;
+    flex-direction:column;
+    padding:24px 16px;
+    position:sticky;
+    top:0;
+    height:100vh;
+  }
+  .sidebar-logo{
+    display:flex;align-items:center;gap:12px;
+    padding:8px 8px 24px 8px;
+    border-bottom:1px solid rgba(255,255,255,0.14);
+    margin-bottom:16px;
+  }
+  .sidebar-logo .mark{
+    width:36px;height:36px;border-radius:var(--radius-sm);
+    background:rgba(255,255,255,0.16);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:15px;letter-spacing:.5px;
+  }
+  .sidebar-logo .name{font-weight:600;font-size:15px;line-height:1.2;}
+  .sidebar-logo .sub{font-size:11px;color:rgba(255,255,255,0.6);font-weight:500;}
+
+  .nav-group{flex:1;display:flex;flex-direction:column;gap:2px;}
+  .nav-item{
+    display:flex;align-items:center;gap:12px;
+    padding:11px 12px;border-radius:var(--radius-sm);
+    color:rgba(255,255,255,0.78);
+    font-size:14px;font-weight:500;
+    cursor:pointer;border:none;background:transparent;width:100%;text-align:left;
+    transition:background var(--dur) ease, color var(--dur) ease;
+  }
+  .nav-item svg{width:18px;height:18px;flex-shrink:0;}
+  .nav-item:hover{background:rgba(255,255,255,0.08);color:#fff;}
+  .nav-item.active{background:rgba(255,255,255,0.16);color:#fff;font-weight:600;}
+
+  .sidebar-footer{border-top:1px solid rgba(255,255,255,0.14);padding-top:12px;margin-top:12px;display:flex;flex-direction:column;gap:2px;}
+  .profile-row{
+    display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--radius-sm);
+    cursor:pointer;transition:background var(--dur) ease;
+  }
+  .profile-row:hover{background:rgba(255,255,255,0.08);}
+  .avatar{
+    width:32px;height:32px;border-radius:50%;
+    background:var(--secondary);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:600;flex-shrink:0;
+  }
+  .profile-row .pname{font-size:13px;font-weight:600;color:#fff;}
+  .profile-row .prole{font-size:11px;color:rgba(255,255,255,0.6);}
+  .logout-btn{
+    display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:var(--radius-sm);
+    color:rgba(255,255,255,0.7);font-size:14px;font-weight:500;background:none;border:none;
+    cursor:pointer;width:100%;text-align:left;transition:background var(--dur) ease,color var(--dur) ease;
+  }
+  .logout-btn:hover{background:rgba(220,38,38,0.18);color:#fff;}
+  .logout-btn svg{width:18px;height:18px;}
+
+  /* ---------- MAIN ---------- */
+  .main{flex:1;display:flex;flex-direction:column;min-width:0;}
+
+  .navbar{
+    height:72px;flex-shrink:0;
+    background:var(--card);
+    border-bottom:1px solid var(--border);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 32px;position:sticky;top:0;z-index:20;
+  }
+  .search-box{
+    display:flex;align-items:center;gap:8px;
+    background:var(--bg);border:1px solid var(--border);
+    border-radius:var(--radius-sm);padding:9px 14px;width:320px;
+    transition:border-color var(--dur) ease, box-shadow var(--dur) ease;
+  }
+  .search-box:focus-within{border-color:var(--primary);box-shadow:0 0 0 3px rgba(51,78,144,0.12);}
+  .search-box svg{width:16px;height:16px;color:var(--text-2);flex-shrink:0;}
+  .search-box input{border:none;background:transparent;outline:none;font-size:14px;width:100%;color:var(--text);}
+  .search-box input::placeholder{color:var(--text-2);}
+
+  .navbar-right{display:flex;align-items:center;gap:20px;}
+  .icon-btn{
+    position:relative;width:38px;height:38px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:transparent;border:none;cursor:pointer;color:var(--text-2);
+    transition:background var(--dur) ease,color var(--dur) ease;
+  }
+  .icon-btn:hover{background:var(--bg);color:var(--primary);}
+  .icon-btn svg{width:19px;height:19px;}
+  .badge-dot{
+    position:absolute;top:6px;right:7px;width:8px;height:8px;border-radius:50%;
+    background:var(--error);border:2px solid var(--card);
+  }
+  .navbar-divider{width:1px;height:28px;background:var(--border);}
+  .navbar-profile{display:flex;align-items:center;gap:10px;cursor:pointer;}
+  .navbar-profile .avatar{background:var(--primary);width:36px;height:36px;font-size:13px;}
+  .np-name{font-size:13.5px;font-weight:600;color:var(--text);line-height:1.2;}
+  .np-date{font-size:11.5px;color:var(--text-2);text-transform:capitalize;}
+
+  .content{padding:32px;flex:1;}
+  .page{display:none;animation:fadeSlide var(--dur) ease;}
+  .page.active{display:block;}
+  @keyframes fadeSlide{
+    from{opacity:0;transform:translateY(6px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+
+  .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+  .page-title{font-size:22px;font-weight:700;color:var(--text);margin:0;}
+  .page-subtitle{font-size:13.5px;color:var(--text-2);margin-top:2px;}
+
+  /* ---------- BUTTONS ---------- */
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:10px 18px;border-radius:var(--radius-sm);
+    font-size:13.5px;font-weight:600;cursor:pointer;border:none;
+    transition:background var(--dur) ease, box-shadow var(--dur) ease, transform var(--dur) ease, opacity var(--dur) ease;
+    white-space:nowrap;
+  }
+  .btn svg{width:16px;height:16px;}
+  .btn-primary{background:var(--primary);color:#fff;}
+  .btn-primary:hover{background:var(--hover);}
+  .btn-primary:active{transform:scale(0.97);}
+  .btn-primary:disabled{background:#AEB9D6;cursor:not-allowed;}
+  .btn-secondary{background:#fff;color:var(--primary);border:1px solid var(--border);}
+  .btn-secondary:hover{background:var(--bg);border-color:var(--secondary);}
+  .btn-secondary:active{transform:scale(0.97);}
+  .btn-ghost{background:transparent;color:var(--text-2);}
+  .btn-ghost:hover{background:var(--bg);color:var(--text);}
+  .btn-danger-ghost{background:transparent;color:var(--error);}
+  .btn-danger-ghost:hover{background:var(--error-bg);}
+  .btn-sm{padding:7px 12px;font-size:12.5px;}
+
+  /* ---------- CARDS / GRID ---------- */
+  .grid-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:24px;}
+  .card{
+    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+    padding:20px;box-shadow:var(--shadow-sm);
+  }
+  .stat-card{display:flex;flex-direction:column;gap:10px;}
+  .stat-top{display:flex;align-items:center;justify-content:space-between;}
+  .stat-icon{width:38px;height:38px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;}
+  .stat-icon svg{width:19px;height:19px;}
+  .stat-icon.blue{background:#EAEFFA;color:var(--primary);}
+  .stat-icon.green{background:var(--success-bg);color:var(--success);}
+  .stat-icon.amber{background:var(--warning-bg);color:var(--warning);}
+  .stat-icon.violet{background:#EFEAFA;color:#7C3AED;}
+  .stat-value{font-size:26px;font-weight:700;color:var(--text);}
+  .stat-label{font-size:13px;color:var(--text-2);font-weight:500;}
+  .stat-delta{font-size:12px;font-weight:600;display:flex;align-items:center;gap:4px;}
+  .stat-delta.up{color:var(--success);}
+  .stat-delta.down{color:var(--error);}
+
+  .grid-2{display:grid;grid-template-columns:1.4fr 1fr;gap:20px;margin-bottom:24px;align-items:stretch;}
+  .card-title{font-size:15px;font-weight:700;margin:0 0 4px 0;}
+  .card-sub{font-size:12.5px;color:var(--text-2);margin:0 0 16px 0;}
+
+  .quick-actions{display:flex;flex-direction:column;gap:10px;}
+  .qa-btn{
+    display:flex;align-items:center;gap:12px;padding:12px 14px;
+    border-radius:var(--radius-sm);border:1px solid var(--border);background:#fff;
+    cursor:pointer;transition:all var(--dur) ease;text-align:left;width:100%;
+  }
+  .qa-btn:hover{border-color:var(--secondary);background:var(--bg);transform:translateY(-1px);}
+  .qa-btn .qi{width:34px;height:34px;border-radius:var(--radius-sm);background:#EAEFFA;color:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .qa-btn .qi svg{width:16px;height:16px;}
+  .qa-btn .qt{font-size:13.5px;font-weight:600;color:var(--text);}
+  .qa-btn .qd{font-size:11.5px;color:var(--text-2);}
+
+  /* ---------- TABLE ---------- */
+  .table-wrap{overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  thead th{
+    text-align:left;padding:10px 14px;color:var(--text-2);font-weight:600;font-size:12px;
+    text-transform:uppercase;letter-spacing:.03em;border-bottom:1px solid var(--border);white-space:nowrap;
+  }
+  tbody td{padding:13px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+  tbody tr{transition:background var(--dur) ease;}
+  tbody tr:hover{background:var(--bg);}
+  tbody tr:last-child td{border-bottom:none;}
+  .cell-main{font-weight:600;}
+  .cell-sub{font-size:12px;color:var(--text-2);}
+  .row-actions{display:flex;gap:4px;}
+  .table-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
+  .filters{display:flex;gap:10px;flex-wrap:wrap;}
+
+  /* ---------- BADGES ---------- */
+  .badge{
+    display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;
+    font-size:11.5px;font-weight:600;
+  }
+  .badge::before{content:'';width:6px;height:6px;border-radius:50%;}
+  .badge.success{background:var(--success-bg);color:var(--success);}
+  .badge.success::before{background:var(--success);}
+  .badge.warning{background:var(--warning-bg);color:var(--warning);}
+  .badge.warning::before{background:var(--warning);}
+  .badge.error{background:var(--error-bg);color:var(--error);}
+  .badge.error::before{background:var(--error);}
+  .badge.neutral{background:#EEF1F6;color:var(--text-2);}
+  .badge.neutral::before{background:var(--text-2);}
+  .badge.info{background:#EAEFFA;color:var(--primary);}
+  .badge.info::before{background:var(--primary);}
+
+  /* ---------- INPUTS / FORMS ---------- */
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+  .field label{font-size:12.5px;font-weight:600;color:var(--text);}
+  .field .hint{font-size:11.5px;color:var(--text-2);}
+  .field .error-msg{font-size:11.5px;color:var(--error);display:none;}
+  .field.has-error .error-msg{display:block;}
+  .field.has-error input,.field.has-error select,.field.has-error textarea{border-color:var(--error);}
+  input[type=text],input[type=email],input[type=tel],input[type=date],input[type=number],select,textarea{
+    width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);
+    font-size:13.5px;font-family:inherit;color:var(--text);background:#fff;
+    transition:border-color var(--dur) ease, box-shadow var(--dur) ease, background var(--dur) ease;
+    outline:none;
+  }
+  input:hover,select:hover,textarea:hover{border-color:var(--secondary);}
+  input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(51,78,144,0.12);}
+  input:disabled,select:disabled,textarea:disabled{background:#F3F4F6;color:var(--text-2);cursor:not-allowed;}
+  textarea{resize:vertical;min-height:80px;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .form-section{margin-bottom:8px;}
+  .form-section-title{font-size:14px;font-weight:700;margin:0 0 16px 0;padding-bottom:10px;border-bottom:1px solid var(--border);}
+
+  /* ---------- RESERVATION LAYOUT ---------- */
+  .reservation-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:20px;align-items:flex-start;}
+  .summary-card{position:sticky;top:96px;}
+  .summary-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;font-size:13.5px;border-bottom:1px dashed var(--border);}
+  .summary-row.total{border-top:1px solid var(--border);border-bottom:none;margin-top:6px;padding-top:14px;font-weight:700;font-size:15.5px;}
+  .summary-row .label{color:var(--text-2);}
+  .summary-row.total .label{color:var(--text);}
+  .services-tag{display:inline-flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:999px;padding:5px 11px;font-size:12px;font-weight:500;margin:3px 4px 0 0;}
+
+  /* ---------- ROOMS GRID ---------- */
+  .rooms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;}
+  .room-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:16px;transition:box-shadow var(--dur) ease, transform var(--dur) ease;}
+  .room-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px);}
+  .room-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
+  .room-number{font-size:18px;font-weight:700;}
+  .room-type{font-size:12px;color:var(--text-2);margin-bottom:12px;}
+  .room-meta{display:flex;justify-content:space-between;font-size:12.5px;color:var(--text-2);border-top:1px solid var(--border);padding-top:10px;margin-top:4px;}
+  .room-price{font-weight:700;color:var(--primary);}
+
+  /* ---------- MODAL ---------- */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(31,41,55,0.45);display:none;
+    align-items:center;justify-content:center;z-index:100;
+    animation:fadeIn var(--dur) ease;
+  }
+  .modal-overlay.open{display:flex;}
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+  .modal{
+    background:#fff;border-radius:var(--radius);width:440px;max-width:90vw;
+    box-shadow:var(--shadow-lg);animation:scaleIn var(--dur) ease;
+  }
+  @keyframes scaleIn{from{opacity:0;transform:scale(0.96);}to{opacity:1;transform:scale(1);}}
+  .modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 22px;border-bottom:1px solid var(--border);}
+  .modal-header h3{margin:0;font-size:16px;font-weight:700;}
+  .modal-body{padding:22px;font-size:13.5px;}
+  .modal-body .mrow{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);}
+  .modal-body .mrow:last-child{border-bottom:none;}
+  .modal-body .mrow .l{color:var(--text-2);}
+  .modal-body .mrow .v{font-weight:600;}
+  .modal-footer{padding:16px 22px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;}
+  .close-x{background:none;border:none;cursor:pointer;color:var(--text-2);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background var(--dur) ease;}
+  .close-x:hover{background:var(--bg);}
+  .close-x svg{width:16px;height:16px;}
+
+  /* ---------- TOAST ---------- */
+  .toast-wrap{position:fixed;bottom:24px;right:24px;display:flex;flex-direction:column;gap:10px;z-index:200;}
+  .toast{
+    display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--border);
+    border-left:4px solid var(--success);border-radius:var(--radius-sm);padding:14px 18px;
+    box-shadow:var(--shadow-lg);font-size:13.5px;font-weight:500;min-width:280px;
+    animation:slideUp var(--dur) ease;
+  }
+  @keyframes slideUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+  .toast svg{width:18px;height:18px;color:var(--success);flex-shrink:0;}
+
+  /* ---------- SETTINGS ---------- */
+  .settings-grid{display:grid;grid-template-columns:220px 1fr;gap:24px;}
+  .settings-nav{display:flex;flex-direction:column;gap:2px;}
+  .settings-nav button{
+    text-align:left;padding:10px 14px;border-radius:var(--radius-sm);border:none;background:transparent;
+    font-size:13.5px;font-weight:500;color:var(--text-2);cursor:pointer;transition:all var(--dur) ease;
+  }
+  .settings-nav button:hover{background:var(--bg);color:var(--text);}
+  .settings-nav button.active{background:#EAEFFA;color:var(--primary);font-weight:700;}
+  .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);}
+  .toggle-row:last-child{border-bottom:none;}
+  .toggle-row .tt{font-size:13.5px;font-weight:600;}
+  .toggle-row .td{font-size:12px;color:var(--text-2);margin-top:2px;}
+  .switch{position:relative;width:42px;height:24px;flex-shrink:0;}
+  .switch input{opacity:0;width:0;height:0;}
+  .slider-toggle{position:absolute;cursor:pointer;inset:0;background:#CBD3E1;border-radius:999px;transition:background var(--dur) ease;}
+  .slider-toggle::before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform var(--dur) ease;box-shadow:0 1px 3px rgba(0,0,0,0.2);}
+  input:checked + .slider-toggle{background:var(--primary);}
+  input:checked + .slider-toggle::before{transform:translateX(18px);}
+
+  .avatar-lg{width:64px;height:64px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;}
+
+  /* ---------- CHART CANVAS ---------- */
+  .chart-box{height:220px;position:relative;}
+
+  @media (max-width:1180px){
+    .grid-stats{grid-template-columns:repeat(2,1fr);}
+    .grid-2, .reservation-grid, .settings-grid{grid-template-columns:1fr;}
+    .form-row{grid-template-columns:1fr;}
+  }
+  @media (max-width:860px){
+    .sidebar{position:fixed;left:0;transform:translateX(-100%);z-index:50;transition:transform var(--dur) ease;}
+    .sidebar.open{transform:translateX(0);}
+    .search-box{width:180px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="mark">HI</div>
+      <div>
+        <div class="name">Hotel Izalco</div>
+        <div class="sub">Panel administrativo</div>
+      </div>
+    </div>
+
+    <nav class="nav-group">
+      <button class="nav-item" data-page="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        Panel Principal
+      </button>
+      <button class="nav-item active" data-page="nueva-reserva">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M12 13v5M9.5 15.5h5"/></svg>
+        Nueva Reserva
+      </button>
+      <button class="nav-item" data-page="clientes">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17.5" cy="8.5" r="2.6"/><path d="M16 14.2c2.9.4 5 2.6 5 5.8"/></svg>
+        Clientes
+      </button>
+      <button class="nav-item" data-page="habitaciones">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20V7a1 1 0 0 1 1-1h3v14"/><path d="M2 12h20"/><path d="M22 20V10a1 1 0 0 0-1-1h-3a3 3 0 0 0-3 3v8"/><path d="M6 8h4"/></svg>
+        Habitaciones
+      </button>
+      <button class="nav-item" data-page="reportes">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M12 20V4M20 20v-7"/><path d="M2 20h20"/></svg>
+        Reportes
+      </button>
+      <button class="nav-item" data-page="configuracion">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H4a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1a1.7 1.7 0 0 0 1.9.3H10a1.7 1.7 0 0 0 1-1.6V4a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.3 1.9V10a1.7 1.7 0 0 0 1.6 1H20a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.6 1z"/></svg>
+        Configuración
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="profile-row">
+        <div class="avatar">CR</div>
+        <div>
+          <div class="pname">Carla Rivas</div>
+          <div class="prole">Administradora</div>
+        </div>
+      </div>
+      <button class="logout-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+        Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+    <header class="navbar">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" placeholder="Buscar reservas, clientes, habitaciones...">
+      </div>
+      <div class="navbar-right">
+        <button class="icon-btn" aria-label="Notificaciones">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a1.9 1.9 0 0 1-3.4 0"/></svg>
+          <span class="badge-dot"></span>
+        </button>
+        <div class="navbar-divider"></div>
+        <div class="navbar-profile">
+          <div class="avatar">CR</div>
+          <div>
+            <div class="np-name">Carla Rivas</div>
+            <div class="np-date" id="today-date"></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- ================= PANEL PRINCIPAL ================= -->
+      <section class="page" id="page-dashboard">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Panel Principal</h1>
+            <div class="page-subtitle">Resumen de la operación del hotel hoy</div>
+          </div>
+          <button class="btn btn-primary" onclick="goTo('nueva-reserva')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            Nueva Reserva
+          </button>
+        </div>
+
+        <div class="grid-stats" id="stats-cards"></div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3 class="card-title">Ocupación de los últimos 7 días</h3>
+            <p class="card-sub">Porcentaje de habitaciones ocupadas por día</p>
+            <div class="chart-box"><canvas id="chartOcupacion"></canvas></div>
+          </div>
+          <div class="card">
+            <h3 class="card-title">Acciones rápidas</h3>
+            <p class="card-sub">Tareas frecuentes del día a día</p>
+            <div class="quick-actions">
+              <button class="qa-btn" onclick="goTo('nueva-reserva')">
+                <div class="qi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></div>
+                <div><div class="qt">Crear nueva reserva</div><div class="qd">Registrar un huésped y asignar habitación</div></div>
+              </button>
+              <button class="qa-btn" onclick="goTo('clientes')">
+                <div class="qi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/></svg></div>
+                <div><div class="qt">Agregar cliente</div><div class="qd">Registrar un nuevo huésped en el sistema</div></div>
+              </button>
+              <button class="qa-btn" onclick="goTo('habitaciones')">
+                <div class="qi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M4 18V8a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v10"/></svg></div>
+                <div><div class="qt">Revisar habitaciones</div><div class="qd">Ver disponibilidad y estado actual</div></div>
+              </button>
+              <button class="qa-btn" onclick="goTo('reportes')">
+                <div class="qi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg></div>
+                <div><div class="qt">Ver reportes</div><div class="qd">Consultar ingresos y ocupación</div></div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="table-toolbar">
+            <div>
+              <h3 class="card-title" style="margin-bottom:2px;">Reservas recientes</h3>
+              <p class="card-sub" style="margin-bottom:0;">Últimos movimientos registrados</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="goTo('clientes')">Ver todas</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Cliente</th><th>Habitación</th><th>Entrada</th><th>Salida</th><th>Estado</th><th>Total</th></tr></thead>
+              <tbody id="dashboard-reservas"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= NUEVA RESERVA ================= -->
+      <section class="page active" id="page-nueva-reserva">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Nueva Reserva</h1>
+            <div class="page-subtitle">Registra un huésped y confirma su estadía</div>
+          </div>
+        </div>
+
+        <form class="reservation-grid" id="reserva-form" onsubmit="return crearReserva(event)">
+          <div class="card">
+            <div class="form-section">
+              <h3 class="form-section-title">Datos del cliente</h3>
+              <div class="form-row">
+                <div class="field"><label>Nombre completo</label><input type="text" placeholder="Ej. María Fernanda López" required></div>
+                <div class="field"><label>Documento (DUI)</label><input type="text" placeholder="00000000-0" required></div>
+              </div>
+              <div class="form-row">
+                <div class="field"><label>Correo electrónico</label><input type="email" placeholder="correo@ejemplo.com" required></div>
+                <div class="field"><label>Teléfono</label><input type="tel" placeholder="+503 0000-0000" required></div>
+              </div>
+              <div class="field"><label>Dirección</label><input type="text" placeholder="Dirección completa"></div>
+            </div>
+
+            <div class="form-section">
+              <h3 class="form-section-title">Datos de la reserva</h3>
+              <div class="form-row">
+                <div class="field">
+                  <label>Habitación</label>
+                  <select id="sel-habitacion" onchange="actualizarResumen()"></select>
+                </div>
+                <div class="field">
+                  <label>Tipo de habitación</label>
+                  <input type="text" id="sel-tipo" disabled>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field"><label>Fecha de entrada</label><input type="date" id="fecha-entrada" onchange="actualizarResumen()"></div>
+                <div class="field"><label>Fecha de salida</label><input type="date" id="fecha-salida" onchange="actualizarResumen()"></div>
+              </div>
+              <div class="form-row">
+                <div class="field"><label>Cantidad de huéspedes</label>
+                  <select><option>1 huésped</option><option selected>2 huéspedes</option><option>3 huéspedes</option><option>4 huéspedes</option></select>
+                </div>
+                <div class="field"><label>Método de pago</label>
+                  <select><option>Tarjeta de crédito</option><option>Tarjeta de débito</option><option>Efectivo</option><option>Transferencia bancaria</option></select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field"><label>Estado</label>
+                  <select><option>Pendiente</option><option selected>Confirmada</option><option>Completada</option></select>
+                </div>
+                <div class="field"><label>Descuento (%)</label><input type="number" id="descuento" value="0" min="0" max="100" onchange="actualizarResumen()"></div>
+              </div>
+              <div class="field"><label>Observaciones</label><textarea placeholder="Notas adicionales sobre la reserva..."></textarea></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              Confirmar reserva
+            </button>
+          </div>
+
+          <div class="card summary-card">
+            <h3 class="card-title">Resumen</h3>
+            <p class="card-sub">Detalle del costo de la estadía</p>
+            <div class="summary-row"><span class="label">Precio por noche</span><span id="s-precio">$0.00</span></div>
+            <div class="summary-row"><span class="label">Noches</span><span id="s-noches">0</span></div>
+            <div class="summary-row"><span class="label">Subtotal</span><span id="s-subtotal">$0.00</span></div>
+            <div class="summary-row"><span class="label">Impuestos (13%)</span><span id="s-impuestos">$0.00</span></div>
+            <div class="summary-row"><span class="label">Descuento</span><span id="s-descuento">-$0.00</span></div>
+            <div class="summary-row total"><span class="label">Total</span><span id="s-total">$0.00</span></div>
+            <p class="card-sub" style="margin:16px 0 8px 0;">Servicios incluidos</p>
+            <div>
+              <span class="services-tag">Wifi de alta velocidad</span>
+              <span class="services-tag">Desayuno buffet</span>
+              <span class="services-tag">Acceso a piscina</span>
+              <span class="services-tag">Parqueo privado</span>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <!-- ================= CLIENTES ================= -->
+      <section class="page" id="page-clientes">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Clientes</h1>
+            <div class="page-subtitle">Huéspedes registrados en el sistema</div>
+          </div>
+          <button class="btn btn-primary" onclick="goTo('nueva-reserva')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            Nuevo cliente
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="table-toolbar">
+            <div class="search-box" style="width:280px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+              <input type="text" placeholder="Buscar cliente...">
+            </div>
+            <div class="filters">
+              <select><option>Todos los departamentos</option><option>San Salvador</option><option>Santa Ana</option><option>La Libertad</option><option>San Miguel</option></select>
+              <select><option>Todos los estados</option><option>Activo</option><option>Inactivo</option></select>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Cliente</th><th>Documento</th><th>Contacto</th><th>Dirección</th><th>Reservas</th><th>Estado</th><th></th></tr></thead>
+              <tbody id="clientes-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= HABITACIONES ================= -->
+      <section class="page" id="page-habitaciones">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Habitaciones</h1>
+            <div class="page-subtitle">Disponibilidad y estado del inventario</div>
+          </div>
+          <div class="filters">
+            <select><option>Todos los tipos</option><option>Estándar</option><option>Doble</option><option>Suite</option><option>Suite Ejecutiva</option><option>Presidencial</option></select>
+            <select><option>Todos los estados</option><option>Disponible</option><option>Ocupada</option><option>Mantenimiento</option></select>
+          </div>
+        </div>
+        <div class="rooms-grid" id="rooms-grid"></div>
+      </section>
+
+      <!-- ================= REPORTES ================= -->
+      <section class="page" id="page-reportes">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Reportes</h1>
+            <div class="page-subtitle">Desempeño financiero y operativo</div>
+          </div>
+          <button class="btn btn-secondary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13M7 11l5 5 5-5"/><path d="M5 21h14"/></svg>
+            Exportar
+          </button>
+        </div>
+
+        <div class="grid-stats" id="report-cards"></div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3 class="card-title">Ingresos por mes</h3>
+            <p class="card-sub">Últimos 6 meses</p>
+            <div class="chart-box"><canvas id="chartIngresos"></canvas></div>
+          </div>
+          <div class="card">
+            <h3 class="card-title">Reservas por tipo de habitación</h3>
+            <p class="card-sub">Distribución del período actual</p>
+            <div class="chart-box"><canvas id="chartTipos"></canvas></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= CONFIGURACIÓN ================= -->
+      <section class="page" id="page-configuracion">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Configuración</h1>
+            <div class="page-subtitle">Preferencias del sistema y de la cuenta</div>
+          </div>
+        </div>
+
+        <div class="settings-grid">
+          <div class="settings-nav">
+            <button class="active">Perfil</button>
+            <button>Hotel</button>
+            <button>Notificaciones</button>
+            <button>Seguridad</button>
+          </div>
+          <div class="card">
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;">
+              <div class="avatar-lg">CR</div>
+              <div>
+                <div style="font-weight:700;font-size:16px;">Carla Rivas</div>
+                <div style="color:var(--text-2);font-size:13px;">Administradora · carla.rivas@hotelizalco.com</div>
+              </div>
+              <button class="btn btn-secondary btn-sm" style="margin-left:auto;">Cambiar foto</button>
+            </div>
+            <div class="form-row">
+              <div class="field"><label>Nombre completo</label><input type="text" value="Carla Rivas"></div>
+              <div class="field"><label>Correo electrónico</label><input type="email" value="carla.rivas@hotelizalco.com"></div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label>Teléfono</label><input type="tel" value="+503 7123-4567"></div>
+              <div class="field"><label>Idioma</label><select><option>Español</option><option>Inglés</option></select></div>
+            </div>
+
+            <h3 class="form-section-title" style="margin-top:8px;">Preferencias de notificación</h3>
+            <div class="toggle-row">
+              <div><div class="tt">Nuevas reservas</div><div class="td">Recibir alerta cuando se registre una reserva</div></div>
+              <label class="switch"><input type="checkbox" checked><span class="slider-toggle"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><div class="tt">Cancelaciones</div><div class="td">Recibir alerta cuando un cliente cancele</div></div>
+              <label class="switch"><input type="checkbox" checked><span class="slider-toggle"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><div class="tt">Reportes semanales</div><div class="td">Resumen automático cada lunes</div></div>
+              <label class="switch"><input type="checkbox"><span class="slider-toggle"></span></label>
+            </div>
+
+            <div style="margin-top:20px;display:flex;justify-content:flex-end;gap:10px;">
+              <button class="btn btn-ghost">Cancelar</button>
+              <button class="btn btn-primary">Guardar cambios</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- ============ MODAL: VER CLIENTE ============ -->
+<div class="modal-overlay" id="modal-cliente">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Detalle del cliente</h3>
+      <button class="close-x" onclick="cerrarModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="modal-body-content"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="cerrarModal()">Cerrar</button>
+      <button class="btn btn-primary" onclick="cerrarModal()">Editar cliente</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+/* ============================================================
+   NAVEGACIÓN
+============================================================ */
+function goTo(pageId){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.page===pageId));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+pageId).classList.add('active');
+}
+document.querySelectorAll('.nav-item').forEach(n=>{
+  n.addEventListener('click', ()=>goTo(n.dataset.page));
+});
+
+const fechaHoy = new Date(2026,6,25);
+document.getElementById('today-date').textContent = fechaHoy.toLocaleDateString('es-SV',{weekday:'long', day:'numeric', month:'long'});
+
+/* ============================================================
+   DATOS SIMULADOS
+============================================================ */
+const nombres = ['María Fernanda','José Antonio','Ana Lucía','Carlos Alberto','Gabriela María','Luis Fernando','Diana Patricia','Ricardo José','Claudia Beatriz','Manuel Enrique','Sofía Alejandra','Jorge Eduardo','Karla Vanessa','Roberto Carlos','Andrea Nicole','Mario Ernesto','Patricia Elizabeth','Fernando José','Cecilia Marisol','Óscar Armando'];
+const apellidos = ['López Martínez','Hernández Rivas','García Alas','Rodríguez Cruz','Flores Menjívar','Pérez Escobar','Ramírez Guevara','Torres Amaya','Vásquez Mejía','Chávez Portillo','Reyes Argueta','Molina Zelaya','Cortez Alvarado','Aguilar Guardado','Contreras Palacios','Serrano Deras','Quintanilla Cerón','Machado Sandoval','Escamilla Turcios','Villalta Orellana'];
+const departamentos = ['San Salvador','Santa Ana','La Libertad','San Miguel','Sonsonate','La Paz','Ahuachapán','Usulután'];
+
+function pad(n){return n.toString().padStart(2,'0');}
+function docFmt(i){return `0${pad((i*7+13)%100)}${pad((i*3+5)%100)}${pad((i*11+2)%100)}-${(i+1)%10}`;}
+function telFmt(i){return `+503 ${7000+ (i*37)%999}-${1000+(i*91)%8999}`;}
+
+const clientes = nombres.map((n,i)=>({
+  id:i+1,
+  nombre:`${n} ${apellidos[i]}`,
+  doc:docFmt(i),
+  correo:`${n.split(' ')[0].toLowerCase()}.${apellidos[i].split(' ')[0].toLowerCase()}@correo.com`,
+  telefono:telFmt(i),
+  depto:departamentos[i%departamentos.length],
+  direccion:`Col. ${['Escalón','Miramonte','San Benito','Flor Blanca','Maquilishuat','Utila','Buenos Aires','Roma'][i%8]}, ${departamentos[i%departamentos.length]}`,
+  reservas: (i%5)+1,
+  activo: i%6!==0
+}));
+
+const tipos = ['Estándar','Doble','Suite','Suite Ejecutiva','Presidencial'];
+const preciosTipo = {'Estándar':65,'Doble':85,'Suite':130,'Suite Ejecutiva':175,'Presidencial':260};
+const rooms = Array.from({length:20},(_,i)=>{
+  const piso = Math.floor(i/5)+1;
+  const tipo = tipos[i%5];
+  const estados = ['Disponible','Disponible','Ocupada','Disponible','Mantenimiento'];
+  return {
+    numero: `${piso}0${(i%5)+1}`,
+    tipo,
+    piso,
+    precio: preciosTipo[tipo],
+    estado: estados[(i*3)%estados.length]
+  };
+});
+
+const estadosReserva = ['Confirmada','Pendiente','Completada','Cancelada'];
+const metodos = ['Tarjeta de crédito','Efectivo','Transferencia bancaria','Tarjeta de débito'];
+const reservas = Array.from({length:15},(_,i)=>{
+  const cliente = clientes[i%clientes.length];
+  const room = rooms[(i*3+2)%rooms.length];
+  const entrada = new Date(2026,6,20+ (i%10));
+  const noches = 1+(i%4);
+  const salida = new Date(entrada); salida.setDate(salida.getDate()+noches);
+  const subtotal = room.precio*noches;
+  const total = Math.round(subtotal*1.13);
+  return {
+    cliente: cliente.nombre,
+    habitacion: room.numero,
+    tipo: room.tipo,
+    entrada, salida,
+    estado: estadosReserva[i%estadosReserva.length],
+    metodo: metodos[i%metodos.length],
+    total
+  };
+});
+
+function fmtDate(d){return d.toLocaleDateString('es-SV',{day:'2-digit',month:'short'});}
+function fmtMoney(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function badgeClaseReserva(estado){
+  return {Confirmada:'success', Pendiente:'warning', Completada:'info', Cancelada:'error'}[estado] || 'neutral';
+}
+function badgeClaseHabitacion(estado){
+  return {Disponible:'success', Ocupada:'error', Mantenimiento:'warning'}[estado] || 'neutral';
+}
+
+/* ============================================================
+   RENDER: PANEL PRINCIPAL
+============================================================ */
+const iconClipboard = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>`;
+const iconBed = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20V7a1 1 0 0 1 1-1h3v14"/><path d="M2 12h20"/><path d="M22 20V10a1 1 0 0 0-1-1h-3a3 3 0 0 0-3 3v8"/></svg>`;
+const iconDollar = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`;
+const iconTrend = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>`;
+
+const disponibles = rooms.filter(r=>r.estado==='Disponible').length;
+const ocupadas = rooms.filter(r=>r.estado==='Ocupada').length;
+const ocupacionPct = Math.round((ocupadas/rooms.length)*100);
+const ingresosMes = reservas.reduce((a,r)=>a+r.total,0);
+
+document.getElementById('stats-cards').innerHTML = `
+  <div class="card stat-card">
+    <div class="stat-top"><div class="stat-icon blue">${iconClipboard}</div><span class="stat-delta up">▲ 12%</span></div>
+    <div class="stat-value">${reservas.filter(r=>r.entrada.toDateString()===fechaHoy.toDateString()).length + 4}</div>
+    <div class="stat-label">Reservas hoy</div>
+  </div>
+  <div class="card stat-card">
+    <div class="stat-top"><div class="stat-icon green">${iconBed}</div><span class="stat-delta up">▲ 5%</span></div>
+    <div class="stat-value">${disponibles}</div>
+    <div class="stat-label">Habitaciones disponibles</div>
+  </div>
+  <div class="card stat-card">
+    <div class="stat-top"><div class="stat-icon amber">${iconDollar}</div><span class="stat-delta up">▲ 8.4%</span></div>
+    <div class="stat-value">${fmtMoney(ingresosMes)}</div>
+    <div class="stat-label">Ingresos del mes</div>
+  </div>
+  <div class="card stat-card">
+    <div class="stat-top"><div class="stat-icon violet">${iconTrend}</div><span class="stat-delta down">▼ 2%</span></div>
+    <div class="stat-value">${ocupacionPct}%</div>
+    <div class="stat-label">Ocupación actual</div>
+  </div>
+`;
+
+const iconEye = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>`;
+const iconEdit = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>`;
+const iconTrash = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1L5 6"/></svg>`;
+const iconPlusUser = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M12 8v6M9 11h6"/></svg>`;
+
+document.getElementById('dashboard-reservas').innerHTML = reservas.slice(0,6).map(r=>`
+  <tr>
+    <td class="cell-main">${r.cliente}</td>
+    <td>${r.habitacion} <span class="cell-sub">· ${r.tipo}</span></td>
+    <td>${fmtDate(r.entrada)}</td>
+    <td>${fmtDate(r.salida)}</td>
+    <td><span class="badge ${badgeClaseReserva(r.estado)}">${r.estado}</span></td>
+    <td class="cell-main">${fmtMoney(r.total)}</td>
+  </tr>
+`).join('');
+
+/* ============================================================
+   RENDER: CLIENTES
+============================================================ */
+document.getElementById('clientes-tbody').innerHTML = clientes.map(c=>`
+  <tr>
+    <td>
+      <div class="cell-main">${c.nombre}</div>
+      <div class="cell-sub">${c.correo}</div>
+    </td>
+    <td>${c.doc}</td>
+    <td>
+      <div>${c.telefono}</div>
+      <div class="cell-sub">${c.depto}</div>
+    </td>
+    <td class="cell-sub" style="max-width:200px;">${c.direccion}</td>
+    <td>${c.reservas}</td>
+    <td><span class="badge ${c.activo?'success':'neutral'}">${c.activo?'Activo':'Inactivo'}</span></td>
+    <td>
+      <div class="row-actions">
+        <button class="icon-btn btn-sm" style="width:32px;height:32px;" title="Ver" onclick="verCliente(${c.id})">${iconEye}</button>
+        <button class="icon-btn btn-sm" style="width:32px;height:32px;" title="Editar">${iconEdit}</button>
+        <button class="icon-btn btn-sm" style="width:32px;height:32px;" title="Eliminar" onmouseover="this.style.color='var(--error)'" onmouseout="this.style.color=''">${iconTrash}</button>
+        <button class="icon-btn btn-sm" style="width:32px;height:32px;" title="Crear reserva" onclick="goTo('nueva-reserva')">${iconPlusUser}</button>
+      </div>
+    </td>
+  </tr>
+`).join('');
+
+function verCliente(id){
+  const c = clientes.find(x=>x.id===id);
+  document.getElementById('modal-body-content').innerHTML = `
+    <div class="mrow"><span class="l">Nombre</span><span class="v">${c.nombre}</span></div>
+    <div class="mrow"><span class="l">Documento</span><span class="v">${c.doc}</span></div>
+    <div class="mrow"><span class="l">Correo</span><span class="v">${c.correo}</span></div>
+    <div class="mrow"><span class="l">Teléfono</span><span class="v">${c.telefono}</span></div>
+    <div class="mrow"><span class="l">Dirección</span><span class="v">${c.direccion}</span></div>
+    <div class="mrow"><span class="l">Reservas realizadas</span><span class="v">${c.reservas}</span></div>
+    <div class="mrow"><span class="l">Estado</span><span class="v"><span class="badge ${c.activo?'success':'neutral'}">${c.activo?'Activo':'Inactivo'}</span></span></div>
+  `;
+  document.getElementById('modal-cliente').classList.add('open');
+}
+function cerrarModal(){document.getElementById('modal-cliente').classList.remove('open');}
+
+/* ============================================================
+   RENDER: HABITACIONES
+============================================================ */
+document.getElementById('rooms-grid').innerHTML = rooms.map(r=>`
+  <div class="room-card">
+    <div class="room-top">
+      <div><div class="room-number">Hab. ${r.numero}</div><div class="room-type">${r.tipo} · Piso ${r.piso}</div></div>
+      <span class="badge ${badgeClaseHabitacion(r.estado)}">${r.estado}</span>
+    </div>
+    <div class="room-meta">
+      <span>Capacidad: ${r.tipo==='Presidencial'?4:r.tipo==='Suite Ejecutiva'?3:2} pax</span>
+      <span class="room-price">${fmtMoney(r.precio)}/noche</span>
+    </div>
+  </div>
+`).join('');
+
+/* ============================================================
+   NUEVA RESERVA — select + resumen dinámico
+============================================================ */
+const selHab = document.getElementById('sel-habitacion');
+selHab.innerHTML = rooms.filter(r=>r.estado==='Disponible').map(r=>`<option value="${r.numero}" data-tipo="${r.tipo}" data-precio="${r.precio}">Hab. ${r.numero} — ${r.tipo}</option>`).join('');
+
+function actualizarResumen(){
+  const opt = selHab.options[selHab.selectedIndex];
+  if(!opt) return;
+  const precio = Number(opt.dataset.precio);
+  document.getElementById('sel-tipo').value = opt.dataset.tipo;
+
+  const e = document.getElementById('fecha-entrada').value;
+  const s = document.getElementById('fecha-salida').value;
+  let noches = 1;
+  if(e && s){
+    const d1=new Date(e), d2=new Date(s);
+    noches = Math.max(1, Math.round((d2-d1)/(1000*60*60*24)));
+  }
+  const descuentoPct = Number(document.getElementById('descuento').value)||0;
+  const subtotal = precio*noches;
+  const impuestos = subtotal*0.13;
+  const descuentoMonto = subtotal*(descuentoPct/100);
+  const total = subtotal+impuestos-descuentoMonto;
+
+  document.getElementById('s-precio').textContent = fmtMoney(precio);
+  document.getElementById('s-noches').textContent = noches;
+  document.getElementById('s-subtotal').textContent = fmtMoney(subtotal);
+  document.getElementById('s-impuestos').textContent = fmtMoney(impuestos);
+  document.getElementById('s-descuento').textContent = '-'+fmtMoney(descuentoMonto);
+  document.getElementById('s-total').textContent = fmtMoney(total);
+}
+actualizarResumen();
+
+function crearReserva(ev){
+  ev.preventDefault();
+  mostrarToast('Reserva creada correctamente');
+  ev.target.reset();
+  actualizarResumen();
+  return false;
+}
+
+function mostrarToast(msg){
+  const el = document.createElement('div');
+  el.className='toast';
+  el.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>${msg}</span>`;
+  document.getElementById('toast-wrap').appendChild(el);
+  setTimeout(()=>{el.style.opacity='0'; el.style.transform='translateY(8px)'; setTimeout(()=>el.remove(),200);},3000);
+}
+
+/* ============================================================
+   REPORTES — tarjetas + gráficos
+============================================================ */
+document.getElementById('report-cards').innerHTML = `
+  <div class="card stat-card">
+    <div class="stat-top"><div class="stat-icon blue">${iconDollar}</div></div>
+    <div class="stat-value">${fmtMoney(ingresosMes*4.2)}</div>
+    <div class="stat-label">Ingresos acumulados (año)</div>
+  </div>
+  <div class="card stat-card">
+    <div class="stat-top"><div class="stat-icon green">${iconClipboard}</div></div>
+    <div class="stat-value">${reservas.length*8}</div>
+    <div class="stat-label">Reservas este trimestre</div>
+  </div>
+  <div class="card stat-card">
+    <div class="stat-top"><div class="stat-icon amber">${iconTrend}</div></div>
+    <div class="stat-value">${ocupacionPct}%</div>
+    <div class="stat-label">Ocupación promedio</div>
+  </div>
+  <div class="card stat-card">
+    <div class="stat-top"><div class="stat-icon violet">${iconBed}</div></div>
+    <div class="stat-value">${fmtMoney(ingresosMes/reservas.length)}</div>
+    <div class="stat-label">Tarifa promedio / reserva</div>
+  </div>
+`;
+
+Chart.defaults.font.family = 'Inter';
+Chart.defaults.color = '#6B7280';
+
+new Chart(document.getElementById('chartOcupacion'), {
+  type:'line',
+  data:{
+    labels:['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'],
+    datasets:[{
+      label:'Ocupación %',
+      data:[62,68,71,66,80,92,85],
+      borderColor:'#334E90',
+      backgroundColor:'rgba(51,78,144,0.08)',
+      fill:true, tension:0.35, pointRadius:3, pointBackgroundColor:'#334E90'
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      y:{beginAtZero:true, max:100, grid:{color:'#E5E7EB'}, ticks:{callback:v=>v+'%'}},
+      x:{grid:{display:false}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chartIngresos'), {
+  type:'bar',
+  data:{
+    labels:['Feb','Mar','Abr','May','Jun','Jul'],
+    datasets:[{
+      label:'Ingresos',
+      data:[9200,10850,9800,12400,13100,ingresosMes],
+      backgroundColor:'#7083B1',
+      borderRadius:6,
+      maxBarThickness:36
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      y:{beginAtZero:true, grid:{color:'#E5E7EB'}, ticks:{callback:v=>'$'+v}},
+      x:{grid:{display:false}}
+    }
+  }
+});
+
+const tipoCounts = tipos.map(t=>reservas.filter(r=>r.tipo===t).length + 2);
+new Chart(document.getElementById('chartTipos'), {
+  type:'doughnut',
+  data:{
+    labels:tipos,
+    datasets:[{
+      data:tipoCounts,
+      backgroundColor:['#334E90','#7083B1','#16A34A','#F59E0B','#DC2626'],
+      borderWidth:0
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{position:'bottom', labels:{boxWidth:10, padding:14, font:{size:11}}}}
+  }
+});
+
+/* Settings sub-nav (visual only) */
+document.querySelectorAll('.settings-nav button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('.settings-nav button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+  });
+});
+</script>
+
+</body>
+</html>

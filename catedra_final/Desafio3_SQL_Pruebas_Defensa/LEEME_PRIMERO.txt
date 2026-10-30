@@ -1,0 +1,10 @@
+﻿DESAFIO 3 SQL — PANADERÍA BUEN PAN
+
+PASO 1: Abre 00_INSTALAR_UNA_SOLA_VEZ.sql en SQL Server Management Studio (SSMS) y presiona F5, solo si la base no existe.
+PASO 2: Ejecuta 14_DEMOSTRACION_COMPLETA_RAPIDA.sql para exponer todo en 3–5 minutos.
+PASO 3: Si el docente solicita un componente específico, abre la prueba 01 a 13 y ejecuta F5.
+PASO 4: Consulta Guia_Paso_a_Paso_Desafio3_SQL.docx para saber qué resultados esperar y cómo explicarlos.
+
+Los SQL no tienen comentarios. Las pruebas positivas son reversibles mediante ROLLBACK; las negativas muestran rechazos esperados.
+No elimines una base existente y no vuelvas a ejecutar el instalador.
+Nota: No fue posible validar la ejecución contra una instancia real de SQL Server en este entorno.

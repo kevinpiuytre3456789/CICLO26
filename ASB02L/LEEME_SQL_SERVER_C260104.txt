@@ -1,0 +1,34 @@
+﻿ASB404 - Desafío Práctico #2
+Sistema de Gestión para Supermercado “SuperAhorro”
+
+VERSIÓN PARA MICROSOFT SQL SERVER / SQL SERVER MANAGEMENT STUDIO (SSMS)
+
+Carnet confirmado: C260104
+Carnets de los otros integrantes: PENDIENTE1 y PENDIENTE2.
+
+ARCHIVO PRINCIPAL:
+Supermercado_C260104_PENDIENTE1_PENDIENTE2.sql
+
+CÓMO EJECUTARLO EN SQL SERVER MANAGEMENT STUDIO:
+1. Abre SQL Server Management Studio.
+2. Conéctate a tu servidor de SQL Server.
+3. Selecciona “New Query / Nueva consulta”.
+4. Abre o pega el archivo .sql incluido.
+5. Ejecuta TODO el script con Execute o F5.
+6. El script elimina y vuelve a crear la base SuperAhorro_C260104, por lo que debe ejecutarse con una cuenta que tenga permisos para crear bases de datos.
+7. Al finalizar verás los resultados de las 10 consultas solicitadas y consultas de validación.
+
+IMPORTANTE:
+- Esta versión NO es para MySQL.
+- Usa sintaxis T-SQL compatible con Microsoft SQL Server.
+- Se cambió LIMIT 1 por TOP 1.
+- Se retiró ENGINE=InnoDB.
+- La base se crea con CREATE DATABASE y separadores GO.
+- Se usan DATETIME2 y SYSDATETIME().
+- Las relaciones incluyen ON DELETE CASCADE y ON UPDATE CASCADE según la guía.
+- Incluye PRIMARY KEY, FOREIGN KEY, CHECK, DEFAULT y UNIQUE.
+- Incluye más de 5 registros por tabla.
+- Incluye EMP01, PROD10 y ventas de abril de 2026 para las consultas específicas.
+
+ANTES DE ENTREGAR:
+Cuando tengas los otros dos carnets, reemplaza PENDIENTE1 y PENDIENTE2 en el nombre del archivo y en el encabezado del script.

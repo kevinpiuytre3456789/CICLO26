@@ -1,0 +1,4 @@
+Integrantes: Kevin Isaac Figueroa Calderon; Dana Paola Burgos Escobar; Dimas Emanuel Benitez Mejia.
+Documento: Desafio3 SQL.docx
+Para instalar en SQL Server: ejecutar SQL/00_Instalar_Todo.sql en SSMS.
+Las capturas de SSMS deben obtenerse tras ejecutar los scripts, no se incluyen capturas simuladas.

@@ -1,0 +1,8 @@
+{
+  "server": "localhost",
+  "database": "BuenPan_ASB404",
+  "driver": "ODBC Driver 18 for SQL Server",
+  "trusted_connection": true,
+  "encrypt": true,
+  "trust_server_certificate": true
+}

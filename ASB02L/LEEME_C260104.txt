@@ -1,0 +1,25 @@
+ASB404 - Desafío Práctico #2
+Sistema de Gestión para Supermercado “SuperAhorro”
+
+Carnet confirmado: C260104
+Carnets de los otros integrantes: pendientes.
+
+ARCHIVO PRINCIPAL:
+Supermercado_C260104_PENDIENTE1_PENDIENTE2.sql
+
+ANTES DE ENTREGAR:
+1. Cuando sepas los otros carnets, cambia PENDIENTE1 y PENDIENTE2 tanto en el nombre del archivo como en el encabezado del script.
+2. Ejecuta el script completo en MySQL Workbench 8.0 o superior.
+3. Verifica que no haya errores y toma capturas si el docente pide evidencia.
+4. El script ya incluye la declaración de uso de IA, herramienta y prompt solicitado por la guía.
+
+EL SCRIPT INCLUYE:
+- Creación de la base de datos.
+- Las 7 tablas requeridas.
+- PRIMARY KEY, FOREIGN KEY, CHECK, DEFAULT y UNIQUE.
+- ON DELETE CASCADE y ON UPDATE CASCADE.
+- Más de 5 registros por tabla.
+- Las 10 consultas solicitadas.
+- Datos de abril de 2026 para probar la consulta mensual.
+- EMP01 y PROD10 para las consultas específicas.
+- Consulta adicional de validación de totales.

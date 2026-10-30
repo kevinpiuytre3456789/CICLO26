@@ -1,0 +1,64 @@
+SISTEMA DE GESTIÓN HOTELERA – HOTEL IZALCO
+
+DESCRIPCIÓN GENERAL
+
+Desarrollar una aplicación web moderna para la administración del Hotel
+Izalco, inspirada en Booking.com Extranet, Cloudbeds, Opera PMS, Airbnb
+Host, Microsoft Fluent y Stripe Dashboard.
+
+OBJETIVO Crear un sistema profesional, elegante, moderno y completamente
+en español que simule un software empresarial listo para producción.
+
+PALETA DE COLORES - Color principal: #334E90 - Color secundario:
+#7083B1 - Fondo: #F6F8FC - Tarjetas: #FFFFFF - Texto principal:
+#1F2937 - Texto secundario: #6B7280 - Éxito: #16A34A - Advertencia:
+#F59E0B - Error: #DC2626 - Hover: #29417C - Bordes: #E5E7EB
+
+TIPOGRAFÍA - Inter - Pesos: Regular, Medium, SemiBold y Bold.
+
+ESTILO - Minimalista - Elegante - Profesional - Sombras suaves - Bordes
+de 12 px - Espaciado basado en una cuadrícula de 8 px - Componentes
+reutilizables - Auto Layout
+
+PÁGINAS 1. Panel Principal 2. Nueva Reserva 3. Clientes 4. Habitaciones
+5. Reportes 6. Configuración
+
+SIDEBAR - Logo Hotel Izalco - Panel Principal - Nueva Reserva -
+Clientes - Habitaciones - Reportes - Configuración - Perfil del
+Administrador - Cerrar sesión
+
+NAVBAR - Buscador - Notificaciones - Avatar - Nombre del administrador -
+Fecha
+
+PANEL PRINCIPAL - Tarjetas de estadísticas - Gráficos - Tabla de
+reservas recientes - Acciones rápidas
+
+NUEVA RESERVA Datos del cliente: - Nombre completo - Documento -
+Correo - Teléfono - Dirección
+
+Datos de la reserva: - Habitación - Tipo - Fecha de entrada - Fecha de
+salida - Cantidad de huéspedes - Método de pago - Estado - Observaciones
+
+Panel derecho: - Resumen - Precio - Noches - Impuestos - Descuento -
+Total - Servicios incluidos
+
+CLIENTES - Buscador - Filtros - Tabla - Ver - Editar - Eliminar - Crear
+Reserva
+
+COMPONENTES - Botones - Inputs - Dropdown - Date Picker - Textarea -
+Cards - Badges - Navbar - Sidebar - Tabla - Modal - Toast
+
+ESTADOS Botones: - Normal - Hover - Pressed - Disabled
+
+Inputs: - Default - Hover - Focus - Error - Disabled
+
+ANIMACIONES - Fade - Slide - Scale - Duración aproximada de 200 ms
+
+DATOS SIMULADOS - 20 clientes salvadoreños - 20 habitaciones - 15
+reservas - Tipos de habitación: Estándar, Doble, Suite, Suite Ejecutiva
+y Presidencial
+
+OBJETIVO FINAL El resultado debe parecer un software comercial de
+administración hotelera, con una experiencia moderna, intuitiva y
+profesional, adecuado tanto para una presentación universitaria como
+para un portafolio de desarrollo web.

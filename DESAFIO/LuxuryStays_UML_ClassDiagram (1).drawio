@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-07-25T00:00:00.000Z" agent="Claude" etag="luxurystays" version="24.0.0" type="device">
+  <diagram id="luxurystays-uml" name="LuxuryStays - UML Class Diagram">
+    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title1" value="LuxuryStays Hotel Management System" style="text;html=1;align=center;verticalAlign=middle;fontSize=22;fontStyle=1;fontColor=#1F3864;" vertex="1" parent="1">
+          <mxGeometry x="400" y="20" width="600" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="title2" value="Professional UML Class Diagram" style="text;html=1;align=center;verticalAlign=middle;fontSize=14;fontStyle=2;fontColor=#595959;" vertex="1" parent="1">
+          <mxGeometry x="400" y="50" width="600" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="cliente" value="Cliente" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="80" y="140" width="240" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="cliente_attrs" value="+ idCliente : Integer &lt;&lt;PK&gt;&gt;&#10;+ nombre : String&#10;+ apellido : String&#10;+ correo : String&#10;+ telefono : String" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;spacingBottom=4;whiteSpace=wrap;html=1;fontSize=12;overflow=hidden;" vertex="1" parent="cliente">
+          <mxGeometry y="30" width="240" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="cliente_methods" value="" style="line;strokeColor=#6C8EBF;html=1;strokeWidth=1;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;whiteSpace=wrap;" vertex="1" parent="cliente">
+          <mxGeometry y="140" width="240" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="reserva" value="Reserva" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="500" y="130" width="260" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="reserva_attrs" value="+ idReserva : Integer &lt;&lt;PK&gt;&gt;&#10;+ fechaInicio : Date&#10;+ fechaFin : Date&#10;+ total : Decimal&#10;+ idCliente : Integer &lt;&lt;FK&gt;&gt;&#10;+ numeroHabitacion : Integer &lt;&lt;FK&gt;&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;spacingBottom=4;whiteSpace=wrap;html=1;fontSize=12;overflow=hidden;" vertex="1" parent="reserva">
+          <mxGeometry y="30" width="260" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="reserva_methods" value="" style="line;strokeColor=#D6B656;html=1;strokeWidth=1;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;whiteSpace=wrap;" vertex="1" parent="reserva">
+          <mxGeometry y="160" width="260" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="habitacion" value="Habitacion" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="960" y="140" width="240" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="habitacion_attrs" value="+ numeroHabitacion : Integer &lt;&lt;PK&gt;&gt;&#10;+ tipo : String&#10;+ precioPorNoche : Decimal&#10;+ estado : EstadoHabitacion" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;spacingBottom=4;whiteSpace=wrap;html=1;fontSize=12;overflow=hidden;" vertex="1" parent="habitacion">
+          <mxGeometry y="30" width="240" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="habitacion_methods" value="" style="line;strokeColor=#82B366;html=1;strokeWidth=1;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;whiteSpace=wrap;" vertex="1" parent="habitacion">
+          <mxGeometry y="120" width="240" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="estadohab" value="&lt;&lt;enumeration&gt;&gt;&#10;EstadoHabitacion" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;childLayout=stackLayout;horizontal=1;startSize=44;horizontalStack=0;resizeParent=1;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="980" y="400" width="200" height="114" as="geometry" />
+        </mxCell>
+        <mxCell id="estadohab_values" value="Disponible&#10;Ocupada&#10;Mantenimiento" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;spacingBottom=4;whiteSpace=wrap;html=1;fontSize=12;overflow=hidden;" vertex="1" parent="estadohab">
+          <mxGeometry y="44" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_cliente_reserva" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;startArrow=none;strokeColor=#333333;strokeWidth=1.5;jettySize=auto;orthogonalLoop=1;" edge="1" parent="1" source="cliente" target="reserva">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_cliente_reserva_name" value="realiza" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontStyle=2;fontSize=11;labelBackgroundColor=#FFFFFF;" vertex="1" connectable="0" parent="edge_cliente_reserva">
+          <mxGeometry x="0" y="0" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_cliente_mult" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontSize=12;labelBackgroundColor=#FFFFFF;" vertex="1" connectable="0" parent="edge_cliente_reserva">
+          <mxGeometry x="-0.85" y="0" relative="1" as="geometry">
+            <mxPoint x="0" y="-12" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_reserva_mult1" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontSize=12;labelBackgroundColor=#FFFFFF;" vertex="1" connectable="0" parent="edge_cliente_reserva">
+          <mxGeometry x="0.85" y="0" relative="1" as="geometry">
+            <mxPoint x="0" y="-12" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_habitacion_reserva" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;startArrow=none;strokeColor=#333333;strokeWidth=1.5;jettySize=auto;orthogonalLoop=1;" edge="1" parent="1" source="habitacion" target="reserva">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_habitacion_reserva_name" value="asignada en" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontStyle=2;fontSize=11;labelBackgroundColor=#FFFFFF;" vertex="1" connectable="0" parent="edge_habitacion_reserva">
+          <mxGeometry x="0" y="0" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_habitacion_mult" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontSize=12;labelBackgroundColor=#FFFFFF;" vertex="1" connectable="0" parent="edge_habitacion_reserva">
+          <mxGeometry x="-0.85" y="0" relative="1" as="geometry">
+            <mxPoint x="0" y="-12" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_reserva_mult2" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontSize=12;labelBackgroundColor=#FFFFFF;" vertex="1" connectable="0" parent="edge_habitacion_reserva">
+          <mxGeometry x="0.85" y="0" relative="1" as="geometry">
+            <mxPoint x="0" y="-12" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_habitacion_enum" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=open;startArrow=none;dashed=1;strokeColor=#666666;strokeWidth=1;endFill=0;jettySize=auto;orthogonalLoop=1;" edge="1" parent="1" source="habitacion" target="estadohab">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_habitacion_enum" value="&lt;&lt;use&gt;&gt; estado" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontStyle=2;fontSize=11;labelBackgroundColor=#FFFFFF;" vertex="1" connectable="0" parent="edge_habitacion_enum">
+          <mxGeometry x="0" y="0" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="legend" value="Legend:  PK = Primary Key   |   FK = Foreign Key   |   Association multiplicities shown at each end" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontColor=#666666;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="80" y="560" width="700" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
